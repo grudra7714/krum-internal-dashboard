@@ -1,0 +1,8 @@
+krum-internal-dashboard:
+  volumes:
+     - ".:/src"
+  working_dir: "/src/src"
+  environment:
+     websharetoken: ""
+     DEBUG: 'true'
+     PORT: 3000

@@ -1,0 +1,28 @@
+haproxy:
+  image: 'krumware/docker-haproxy-letsencrypt:latest'
+  links:
+    - letsencrypt
+    - krum-internal-dashboard
+  ports:
+    - '3001:80'
+    - '3002:443'
+  volumes:
+    - '/var/run/docker.sock:/var/run/docker.sock'
+  volumes_from:
+    - letsencrypt
+letsencrypt:
+  environment:
+    - DOMAINS=localhost
+    - EMAIL=rudra@krum.io
+    - LOAD_BALANCER_SERVICE_NAME=haproxy
+    - OPTIONS=--staging
+  expose:
+    - '80'
+  image: 'krumware/docker-letsencrypt:latest'
+krum-internal-dashboard:
+  environment:
+    - FORCE_SSL=yes
+    - 'VIRTUAL_HOST=http://*,https://*'
+  build: .
+  ports:
+    - '3000:3000'

@@ -1,0 +1,60 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+
+<dom-module id="landing-page">
+  <template strip-whitespace>
+      <style is="custom-style">
+          :host {
+            display: block;
+            width: 100%;
+            height: 100%;
+          }
+
+          paper-button.indigo {
+            background-color: var(--paper-indigo-500);
+            color: white;
+            --paper-button-raised-keyboard-focus: {
+              background-color: var(--paper-pink-a200) !important;
+              color: white !important;
+            };
+          }
+          paper-button.indigo:hover {
+            background-color: var(--paper-indigo-400);
+          }
+
+      </style>
+      <template is="dom-repeat" items="[[messages]]" index-as="index">
+          <img src="[[item.user.profile.image_32]]" alt="">
+          <span> [[index]].  &nbsp; &nbsp;  [[item.text]]</span> <br / />
+      </template>
+
+  </template>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+  <script>
+      Polymer({
+        is: "landing-page",
+        properties: {
+            messages: {
+              type: Array,
+              value: []
+            }
+        },
+        attached: function() {
+          var socket = io();
+
+          socket.on('test-connection', function(text) {
+              console.log("Connection tested ", text);
+              this.push("messages",text);
+          }.bind(this));
+
+          socket.on('user-info-event', function(text) {
+              console.log("userInfo ", JSON.parse(text));
+          }.bind(this));
+
+
+        }
+      });
+  </script>
+</dom-module>
